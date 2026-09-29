@@ -41,6 +41,19 @@ select{padding:7px;margin:6px 0;border:1px solid #d0d5dd;border-radius:6px}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 16px 30px}
 @media (max-width:760px){.hero{grid-template-columns:1fr;text-align:center}.hero-photo{order:-1;min-height:190px}.hero-photo img{width:210px;height:270px}nav{text-align:center}nav a{display:inline-block;margin:4px 8px}.two-col,.contact-grid{grid-template-columns:1fr}section{padding:20px}}
+
+.flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:18px}
+.flow-box{min-width:125px;padding:13px 10px;text-align:center;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc}
+.flow-box.result{background:#eef3f9;border-color:#9fb3ca}
+.arrow{font-size:22px;font-weight:700;color:#2b4c7e}
+.example-diagram{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:18px 6px}
+.node{padding:9px 14px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;text-align:center}
+.node.root{background:#eef3f9;border-color:#9fb3ca;font-weight:700}
+.branch{text-align:center}
+.children{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;justify-content:center}
+.calc-note{padding:14px 18px;border-left:3px solid #2b4c7e;background:#f8fafc;line-height:1.7}
+.privacy-note{font-size:14px;background:#fafbfc}
+
 </style>
 <!-- Simple browser-side Excel reader. No backend is required. -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -82,42 +95,63 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 16px 30p
 <div class="box"><h3>Professional Focus</h3><p>我希望將管理研究、工程成本、BOM、NPI 與 AI 技術應用上的能力結合，協助企業建立真正能使用、能持續更新，並能支援管理決策的成本核算系統。</p></div>
 </section>
 
+
 <section id="research">
 <h2>Research / Projects</h2>
-<div class="box">
-<h3>Research Focus — AI-assisted Engineering BOM Cost Accounting</h3>
-<p>本專案以新產品導入（NPI）為情境，將工程 BOM、原物料採購價格、PCB 與其他半成品成本、製造與人工成本等資料整合，建立簡化的多階 BOM 成本核算示範。</p>
-<p>本作業版本刻意維持簡單：<b>Input 1 匯入 BOM → 判斷階層；Input 2 匯入單價 → 依料號對應；最後進行 Cost Roll-up。</b></p>
+
+<div class="two-col">
+  <div class="card">
+    <h3>AI-assisted Engineering BOM Cost Accounting</h3>
+    <p>
+      This coursework prototype explores how engineering BOM structure and
+      cost data can be organized to support NPI cost estimation and decision support.
+    </p>
+    <p><b>Public website:</b> conceptual demonstration only. Detailed calculation logic and source code are not exposed here.</p>
+  </div>
+
+  <div class="card">
+    <h3>Conceptual Workflow</h3>
+    <div class="flow">
+      <div class="flow-box"><b>Input A</b><br>BOM Structure<br><small>Parent → Child</small></div>
+      <div class="arrow">→</div>
+      <div class="flow-box"><b>Input B</b><br>Unit Price Data<br><small>RawPrice</small></div>
+      <div class="arrow">→</div>
+      <div class="flow-box"><b>Cost Model</b><br>Cost Roll-up<br><small>Private logic</small></div>
+      <div class="arrow">→</div>
+      <div class="flow-box result"><b>Output</b><br>NPI Cost View<br><small>Illustrative</small></div>
+    </div>
+  </div>
 </div>
-<p>A simple two-input demo for NPI cost accounting. First import the BOM to determine the parent-child hierarchy; then import the unit-price Excel file to attach prices to the BOM items. The system rolls up cost from lower-level components to the top-level product and shows a simple audit result.</p>
 
 <div class="box">
-<h3>Input 1 — BOM 階層資料</h3>
-<p><small>Excel 欄位：<b>BOM.SN、主件料號、副件料號、單位用量、料品說明</b>。系統會依「父(主)件 → 子(副)件」自動建立階層。</small></p>
-<label class="btn">匯入 BOM Excel<input id="bomFile" type="file" accept=".xlsx,.xls,.csv" onchange="loadBOM(this)"></label>
-<span id="bomStatus" class="badge">尚未匯入</span>
+  <h3>Illustrative Example</h3>
+  <p>Example of the information flow only; the actual calculation formula, matching rules, and implementation are intentionally kept outside the public website.</p>
+  <div class="example-diagram">
+    <div class="node root">Finished Product</div>
+    <div class="branch">
+      <div class="node">Main Assembly</div>
+      <div class="children">
+        <div class="node">PCB</div>
+        <div class="node">Semiconductor</div>
+        <div class="node">Other Component</div>
+      </div>
+    </div>
+    <div class="calc-note">
+      <b>Illustrative result</b><br>
+      BOM hierarchy + unit-price data<br>
+      ↓<br>
+      <b>NPI cost view</b>
+    </div>
+  </div>
 </div>
 
-<div class="box">
-<h3>Input 2 — 單價資料</h3>
-<p><small>Excel 欄位以「料號」對應 BOM；系統預設使用最新的 RawPrice(台幣) 欄位，也可切換其他數字單價欄位。</small></p>
-<label class="btn">匯入單價 Excel<input id="priceFile" type="file" accept=".xlsx,.xls,.csv" onchange="loadPrice(this)"></label>
-<select id="priceColumn" onchange="updatePriceColumn()"><option value="">請先匯入單價檔</option></select>
-<span id="priceStatus" class="badge">尚未匯入</span>
+<div class="box privacy-note">
+  <b>Public Demo Note</b><br>
+  The public portfolio presents the research concept and workflow only.
+  Detailed cost-calculation logic and source code are provided separately as required for coursework submission.
 </div>
-
-<button onclick="loadDemo()">載入測試資料</button>
-<button class="primary" onclick="run()">Calculate</button>
-
-<h3>Result: total cost per unit = <span id="total">-</span></h3>
-<div class="scroll"><table id="tree"></table></div>
-
-<h3>Cost by category</h3>
-<div id="chart"></div>
-
-<h3>Audit</h3>
-<ul id="audit"></ul>
 </section>
+
 
 <section id="contact">
 <h2>Contact / Links</h2>
@@ -129,198 +163,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 16px 30p
 </main>
 <footer>D1540005 · Cynthia Lin</footer>
 
-<script>
-let bomRows=[];
-let priceRows=[];
-let selectedPriceColumn="";
 
-function clean(v){return v===null||v===undefined?"":String(v).trim();}
-function num(v){
-  if(typeof v==="number") return isFinite(v)?v:NaN;
-  const s=clean(v).replace(/,/g,"");
-  if(!s) return NaN;
-  const n=Number(s);
-  return isFinite(n)?n:NaN;
-}
-function readWorkbook(file, callback){
-  const r=new FileReader();
-  r.onload=function(e){
-    try{
-      const wb=XLSX.read(e.target.result,{type:"array"});
-      const ws=wb.Sheets[wb.SheetNames[0]];
-      const data=XLSX.utils.sheet_to_json(ws,{defval:""});
-      callback(data,wb.SheetNames[0]);
-    }catch(err){alert("檔案讀取失敗："+err.message);}
-  };
-  r.readAsArrayBuffer(file);
-}
-
-function loadBOM(el){
-  const f=el.files[0]; if(!f)return;
-  readWorkbook(f,(data,sheet)=>{
-    bomRows=data.map(r=>({
-      bomId:clean(r["BOM.SN"]||r["BOM ID"]||r["BOM"]),
-      parent:clean(r["主件料號"]||r["父件料號"]||r["Parent"]||r["parent"]),
-      part:clean(r["副件料號"]||r["子件料號"]||r["Part"]||r["part"]),
-      qty:num(r["單位用量"]||r["Qty"]||r["qty"]),
-      desc:clean(r["料品說明"]||r["Description"]||r["desc"])
-    })).filter(r=>r.parent&&r.part);
-    document.getElementById("bomStatus").textContent=`已匯入 ${bomRows.length} 筆 / ${sheet}`;
-    run();
-  });
-}
-
-function loadPrice(el){
-  const f=el.files[0]; if(!f)return;
-  readWorkbook(f,(data,sheet)=>{
-    priceRows=data;
-    const cols=data.length?Object.keys(data[0]):[];
-    const sel=document.getElementById("priceColumn");
-    sel.innerHTML="";
-    const priceCols=cols.filter(c=>c!=="料號"&&c!=="料品說明"&&c!=="材料特性");
-    // 對外統一顯示 RawPrice(台幣)，同時支援測試檔原本的 Web(台幣)-日期欄位。
-    const rawCol=cols.find(c=>/^RawPrice\(台幣\)$/i.test(c)) || cols.find(c=>/^Web\(台幣\)/.test(c));
-    const preferred=rawCol || priceCols.find(c=>data.some(r=>!isNaN(num(r[c]))));
-    // 第一個（通常為最新日期）的 Web(台幣) 欄位統一顯示為 RawPrice(台幣)。
-    const webCols=priceCols.filter(c=>/^Web\(台幣\)/.test(c));
-    priceCols.forEach(c=>{
-      const o=document.createElement("option");
-      o.value=c;
-      if(/^Web\(台幣\)/.test(c)){
-        const idx=webCols.indexOf(c);
-        o.textContent=idx===0?"RawPrice(台幣)":c.replace(/^Web\(台幣\)/,"RawPrice(台幣)");
-      }else{
-        o.textContent=c;
-      }
-      sel.appendChild(o);
-    });
-    selectedPriceColumn=preferred||"";
-    if(selectedPriceColumn) sel.value=selectedPriceColumn;
-    document.getElementById("priceStatus").textContent=`已匯入 ${data.length} 筆 / ${sheet}`;
-    run();
-  });
-}
-function updatePriceColumn(){selectedPriceColumn=document.getElementById("priceColumn").value;run();}
-
-function loadDemo(){
-  // Demo follows the structure of the supplied test workbooks.
-  bomRows=[
-    {bomId:"DEMO",parent:"9-TEST-ROOT01",part:"8-TEST-BOARD01",qty:1,desc:"Board Semi Finished A"},
-    {bomId:"DEMO",parent:"9-TEST-ROOT01",part:"BOD-TEST-BOARD02",qty:1,desc:"Board Semi Finished BOD"},
-    {bomId:"DEMO",parent:"9-TEST-ROOT01",part:"L-TEST-SEMI01",qty:2,desc:"Other Semi Finished L-"},
-    {bomId:"DEMO",parent:"8-TEST-BOARD01",part:"PCB-TEST-PCB03",qty:2,desc:"PCB under 8- board"},
-    {bomId:"DEMO",parent:"8-TEST-BOARD01",part:"L-TEST-DEEP01",qty:1,desc:"Deep semi under 8-"},
-    {bomId:"DEMO",parent:"BOD-TEST-BOARD02",part:"ASSE-TEST-ASSY02",qty:1,desc:"Assembly under BOD-"}
-  ];
-  priceRows=[
-    {"料號":"9-TEST-ROOT01","RawPrice(台幣)":1000},
-    {"料號":"8-TEST-BOARD01","RawPrice(台幣)":300},
-    {"料號":"BOD-TEST-BOARD02","RawPrice(台幣)":320},
-    {"料號":"L-TEST-SEMI01","RawPrice(台幣)":50},
-    {"料號":"PCB-TEST-PCB03","RawPrice(台幣)":12},
-    {"料號":"L-TEST-DEEP01","RawPrice(台幣)":40},
-    {"料號":"ASSE-TEST-ASSY02","RawPrice(台幣)":26}
-  ];
-  selectedPriceColumn="RawPrice(台幣)";
-  const sel=document.getElementById("priceColumn");sel.innerHTML=`<option>${selectedPriceColumn}</option>`;
-  document.getElementById("bomStatus").textContent="Demo BOM 已載入";
-  document.getElementById("priceStatus").textContent="Demo 單價已載入";
-  run();
-}
-
-function getPriceMap(audit){
-  const map={}, dup=[];
-  priceRows.forEach(r=>{
-    const p=clean(r["料號"]||r["Part"]||r["part"]);
-    if(!p)return;
-    const v=num(r[selectedPriceColumn]);
-    if(p in map){dup.push(p);return;}
-    map[p]=v;
-  });
-  if(dup.length)audit.push(["warn","單價檔有重複料號："+[...new Set(dup)].join(", ")]);
-  return map;
-}
-
-// Simple category rule for the classroom demo.
-function cat(p){
-  const u=p.toUpperCase();
-  if(u.startsWith("PCB-")||u.startsWith("7-"))return "PCB";
-  if(u.startsWith("BOD-")||u.startsWith("8-"))return "Board";
-  if(u.startsWith("L-")||u.startsWith("LTEST-")||u.startsWith("J-")||u.startsWith("SEMI-"))return "Semi";
-  if(u.startsWith("FW-")||u.startsWith("F10-")||u.startsWith("ASSE-"))return "FW/Assembly";
-  return "Other";
-}
-
-function run(){
-  const audit=[];
-  if(!bomRows.length){
-    document.getElementById("total").textContent="-";
-    document.getElementById("tree").innerHTML="";
-    document.getElementById("chart").innerHTML="";
-    document.getElementById("audit").innerHTML='<li class="warn">請先匯入 BOM。</li>';
-    return;
-  }
-  if(!selectedPriceColumn||!priceRows.length){
-    document.getElementById("audit").innerHTML='<li class="warn">BOM 已匯入；請再匯入單價 Excel。</li>';
-    return;
-  }
-
-  const price=getPriceMap(audit);
-  const parts=new Set();
-  const childSet=new Set();
-  const kids={};
-  const desc={};
-  bomRows.forEach(r=>{
-    parts.add(r.parent);parts.add(r.part);childSet.add(r.part);
-    (kids[r.parent]=kids[r.parent]||[]).push(r);
-    if(r.desc&&!desc[r.part])desc[r.part]=r.desc;
-    if(isNaN(r.qty)||r.qty<=0)audit.push(["err",`"${r.part}" 的單位用量無效`]);
-  });
-
-  const roots=[...parts].filter(p=>!childSet.has(p));
-  if(roots.length===0)audit.push(["err","找不到最上層料號，可能存在階層循環。"]);
-  if(roots.length>1)audit.push(["warn","存在多個最上層料號："+roots.join(", ")]);
-
-  const memo={};
-  function roll(p,stack){
-    if(p in memo)return memo[p];
-    if(stack.includes(p)){audit.push(["err",`偵測到循環：${[...stack,p].join(" → ")}`]);return 0;}
-    let own=price[p];
-    if(isNaN(own)){own=0;audit.push(["warn",`料號 "${p}" 在單價檔沒有可用的 ${selectedPriceColumn}，先以 0 計算`]);}
-    let s=own;
-    (kids[p]||[]).forEach(k=>s+=(isNaN(k.qty)?0:k.qty)*roll(k.part,[...stack,p]));
-    return memo[p]=s;
-  }
-  roots.forEach(r=>roll(r,[]));
-
-  let html='<tr><th>階層 / Part</th><th>Description</th><th class="n">Qty</th><th class="n">Unit price</th><th class="n">Rolled-up cost</th></tr>';
-  const catSum={};
-  function walk(p,qty,mult,depth,stack){
-    if(stack.includes(p))return;
-    const unitPrice=price[p];
-    const priceText=isNaN(unitPrice)?"-":fmt(unitPrice);
-    const unit=memo[p]||0;
-    html+=`<tr><td style="padding-left:${8+depth*18}px">${depth?"└ ":""}${p}</td><td>${desc[p]||""}</td><td class="n">${qty}</td><td class="n">${priceText}</td><td class="n">${fmt(unit*qty)}</td></tr>`;
-    const c=cat(p);catSum[c]=(catSum[c]||0)+(isNaN(unitPrice)?0:unitPrice)*mult;
-    (kids[p]||[]).forEach(k=>walk(k.part,k.qty,mult*k.qty,depth+1,[...stack,p]));
-  }
-  roots.forEach(r=>walk(r,1,1,0,[]));
-  document.getElementById("tree").innerHTML=html;
-
-  const total=roots.reduce((a,r)=>a+(memo[r]||0),0);
-  document.getElementById("total").textContent=fmt(total);
-  document.getElementById("chart").innerHTML=Object.entries(catSum).sort((a,b)=>b[1]-a[1]).map(([c,v])=>{
-    const pct=total?v/total*100:0;
-    return `<div class="row">${c}<div class="bar" style="width:${Math.max(pct,4)}%">${fmt(v)} (${pct.toFixed(0)}%)</div></div>`;
-  }).join("");
-
-  const uniq=[...new Map(audit.map(a=>[a[1],a])).values()];
-  document.getElementById("audit").innerHTML=uniq.length
-    ?uniq.map(a=>`<li class="${a[0]}">${a[0]==="err"?"✖":"⚠"} ${a[1]}</li>`).join("")
-    :'<li class="ok">✔ BOM hierarchy and price mapping passed basic checks.</li>';
-}
-
-const fmt=x=>Number(x).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-</script>
+<script>/* Public portfolio version: calculation implementation intentionally omitted from the public page. */</script>
 </body>
 </html>
