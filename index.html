@@ -327,8 +327,10 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:40px 16px 40p
 <footer>© 2026 <span class="zh">林歆倫</span><span class="en">Cynthia Lin</span> · D1540005 · <span class="zh">本網站由生成式 AI 協助製作</span><span class="en">Built with generative AI as a collaborator</span></footer>
 
 <script>
-/* ===== Photos: put photo1.jpg, photo2.jpg ... next to this file. Missing files are skipped. ===== */
-const PHOTOS=['photo1.jpg','photo2.jpg','photo3.jpg','photo4.jpg','photo5.jpg','photo6.jpg'];
+/* ===== Photos: put photo1, photo2, photo3 ... photoN in the same folder as this file.
+   Any N works (up to MAX_PHOTOS). Numbering must be continuous: the search stops at the first missing number.
+   Accepted names: photo / PHOTO / Photo + number + .jpg .jpeg .png .webp (.JPG .PNG) ===== */
+const PREFIXES=['photo','PHOTO','Photo'],EXTS=['jpg','jpeg','png','webp','JPG','PNG'],MAX_PHOTOS=30;
 const INTERVAL_MS=4000;
 
 const $=id=>document.getElementById(id);
@@ -368,10 +370,19 @@ document.querySelectorAll('[data-count]').forEach(el=>{
 });
 
 /* photo carousel + gallery */
+const tryLoad=src=>new Promise(res=>{const i=new Image();i.onload=()=>res(src);i.onerror=()=>res(null);i.src=src;});
+async function findPhotos(){
+  const found=[];
+  for(let n=1;n<=MAX_PHOTOS;n++){
+    const names=[];PREFIXES.forEach(p=>EXTS.forEach(e=>names.push(`${p}${n}.${e}`)));
+    const hit=(await Promise.all(names.map(tryLoad))).find(Boolean);
+    if(!hit)break;
+    found.push(hit);
+  }
+  return found;
+}
 function initPhotos(){
-  Promise.all(PHOTOS.map(src=>new Promise(res=>{const i=new Image();i.onload=()=>res(src);i.onerror=()=>res(null);i.src=src;})))
-  .then(r=>{
-    const ok=r.filter(Boolean);
+  findPhotos().then(ok=>{
     if(!ok.length)return;
     $('photos').innerHTML=ok.map((s,i)=>`<img src="${s}" alt="Cynthia Lin ${i+1}" class="${i?'':'on'}">`).join('');
     if(ok.length>1){
