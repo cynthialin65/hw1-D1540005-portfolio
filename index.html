@@ -725,7 +725,7 @@ $('tabs').addEventListener('click', e => {
   });
 });
 
-/* Automatic Photo Carousel */
+/* 自動載入 Hero 照片輪播（已移除 Moments 藝廊） */
 const tryLoad = src => new Promise(res => { const i = new Image(); i.onload = () => res(src); i.onerror = () => res(null); i.src = src; });
 async function findPhotos(){
   const found = [];
