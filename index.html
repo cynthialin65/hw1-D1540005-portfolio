@@ -429,6 +429,20 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
   .features-grid { grid-template-columns: 1fr; }
   .nav-links { display: none; }
 }
+
+/* Personal travel gallery: lightweight, image-folder driven */
+.travel-gallery { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.travel-topic { min-width:0; background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; padding:18px; }
+.travel-topic h3 { margin:4px 0 6px; }
+.travel-topic p { color:var(--muted); font-size:14px; margin:0 0 12px; }
+.travel-thumbs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.travel-thumbs a { display:block; border-radius:9px; overflow:hidden; background:var(--soft); }
+.travel-thumbs img { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; }
+.travel-links { display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; font-size:13px; font-weight:650; }
+.travel-links a { text-decoration:underline; }
+.travel-caption { font-size:12px !important; color:var(--muted); margin-top:10px !important; }
+@media(max-width:700px){.travel-gallery{grid-template-columns:1fr;}}
+
 </style>
 </head>
 <body>
@@ -446,6 +460,7 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
       <a href="#edu"><span class="zh">學經歷</span><span class="en">Education</span></a>
       <a href="#focus"><span class="zh">研究主軸</span><span class="en">Research</span></a>
       <a href="#research"><span class="zh">專案</span><span class="en">Projects</span></a>
+      <a href="#travel"><span class="zh">旅行興趣</span><span class="en">Travel</span></a>
       <a href="#contact"><span class="zh">聯絡我</span><span class="en">Contact</span></a>
     </nav>
     <div class="tools">
@@ -703,6 +718,34 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
     </div>
   </section>
 
+
+  <!-- Personal Travel Interest -->
+  <section id="travel">
+    <div class="section-label">PERSONAL INTEREST</div>
+    <h2><span class="zh">旅行探索</span><span class="en">Travel & Exploration</span></h2>
+    <p class="lead"><span class="zh">工作與研究之外，我也喜歡規劃旅行、探索不同地方。以下分享今天的馬爾地夫單車旅行規劃。</span><span class="en">Beyond work and research, I enjoy planning trips and exploring new places. Here are my Maldives cycling travel projects.</span></p>
+    <div class="travel-gallery">
+      <article class="travel-topic">
+        <div class="section-label">TRAVELING</div>
+        <h3><span class="zh">旅行行程</span><span class="en">Travel Plans</span></h3>
+        <p><span class="zh">Addu 與 Fuvahmulah 單車旅行規劃。</span><span class="en">Cycling travel plans for Addu and Fuvahmulah.</span></p>
+        <div class="travel-thumbs" id="travelingGallery"></div>
+        <div class="travel-links">
+          <a href="assets/addu-travel-booklet-cn.pdf" target="_blank" rel="noopener"><span class="zh">Addu 中文行程手冊</span><span class="en">Addu Chinese itinerary</span></a>
+          <a href="assets/fuvahmulah-cycling-guide-en.pdf" target="_blank" rel="noopener"><span class="zh">Fuvahmulah 英文指南</span><span class="en">Fuvahmulah English guide</span></a>
+        </div>
+      </article>
+      <article class="travel-topic">
+        <div class="section-label">MAP</div>
+        <h3><span class="zh">旅行地圖</span><span class="en">Travel Maps</span></h3>
+        <p><span class="zh">單車路線與目的地位置示意。</span><span class="en">Cycling routes and destination maps.</span></p>
+        <div class="travel-thumbs" id="mapGallery"></div>
+        <p class="travel-caption"><span class="zh">地圖為規劃示意，實際路況與距離請以現場資訊為準。</span><span class="en">Maps are planning illustrations; confirm actual road conditions and distances locally.</span></p>
+      </article>
+    </div>
+    <p class="travel-caption"><span class="zh">圖片可依 traveling1、traveling2…及 map1、map2… 命名，放入 assets 資料夾即可自動顯示；詳細文件另以連結開啟，不直接嵌入首頁。</span><span class="en">Add traveling1, traveling2… and map1, map2… images to the assets folder. Detailed documents open separately and are not embedded on this page.</span></p>
+  </section>
+
   <!-- Contact -->
   <section id="contact">
     <div class="section-label">CONTACT</div>
@@ -810,9 +853,27 @@ function initPhotos(){
   });
 }
 
+function loadNumberedGallery(prefix, targetId, altText){
+  const target = $(targetId); if(!target) return;
+  const extensions = ['jpg','jpeg','png','webp','JPG','PNG'];
+  const check = src => new Promise(resolve => { const img = new Image(); img.onload = () => resolve(src); img.onerror = () => resolve(null); img.src = src; });
+  (async () => {
+    for(let n=1; n<=30; n++){
+      const candidates = extensions.map(ext => `assets/${prefix}${n}.${ext}`);
+      const found = (await Promise.all(candidates.map(check))).find(Boolean);
+      if(!found) break;
+      const link = document.createElement('a'); link.href=found; link.target='_blank'; link.rel='noopener';
+      const img = document.createElement('img'); img.src=found; img.alt=`${altText} ${n}`; img.loading='lazy';
+      link.appendChild(img); target.appendChild(link);
+    }
+  })();
+}
+
 setTheme(load('theme') || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 setLang(load('lang') || 'zh');
 initPhotos();
+loadNumberedGallery("traveling", "travelingGallery", "Travel plan");
+loadNumberedGallery("map", "mapGallery", "Travel map");
 </script>
 
 </body>
