@@ -744,12 +744,12 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
     <div class="travel-grid">
       <div class="travel-card">
         <h3><span class="zh">行程路線地圖</span><span class="en">Tour Route Map</span></h3>
-        <a href="map1.png" target="_blank" rel="noopener" aria-label="Open Addu Atoll route map">
-          <img class="travel-map" src="map1.png" alt="Addu Atoll cycling route map" loading="lazy">
+        <a id="travelMapOpen" href="map1.jpg" target="_blank" rel="noopener" aria-label="Open Addu Atoll route map">
+          <img id="travelMapImage" class="travel-map" src="map1.jpg" alt="Addu Atoll cycling route map" loading="lazy">
         </a>
         <p class="zh">點選地圖可檢視完整路線與行程資訊。</p>
         <p class="en">Select the map to view the full route and itinerary details. The currently published map artwork is the original Chinese edition.</p>
-        <a class="travel-file-link" href="map1.png" target="_blank" rel="noopener"><span class="zh">檢視完整路線地圖</span><span class="en">View Full Route Map</span> ↗</a>
+        <a id="travelMapLink" class="travel-file-link" href="map1.jpg" target="_blank" rel="noopener"><span class="zh">檢視完整路線地圖</span><span class="en">View Full Route Map</span> ↗</a>
       </div>
       <div class="travel-card">
         <h3><span class="zh">行程文件</span><span class="en">Travel Documents</span></h3>
@@ -845,6 +845,26 @@ $('tabs').addEventListener('click', e => {
   });
 });
 
+/* 自動偵測最新地圖檔：優先使用 map1.jpg，若不存在才退回 map1.png */
+async function initTravelMap(){
+  const candidates = ['map1.jpg', 'map1.png', 'map1.jpeg', 'map1.webp'];
+  const available = (await Promise.all(candidates.map(tryLoad))).find(Boolean);
+  const image = $('travelMapImage');
+  const open = $('travelMapOpen');
+  const link = $('travelMapLink');
+  if (!image || !open || !link) return;
+  if (available) {
+    image.src = available;
+    open.href = available;
+    link.href = available;
+  } else {
+    image.alt = 'Route map is not available. Please check the map file in the repository root.';
+    image.removeAttribute('src');
+    open.removeAttribute('href');
+    link.removeAttribute('href');
+  }
+}
+
 /* 自動載入 Hero 照片輪播（已移除 Moments 藝廊） */
 const tryLoad = src => new Promise(res => { const i = new Image(); i.onload = () => res(src); i.onerror = () => res(null); i.src = src; });
 async function findPhotos(){
@@ -876,6 +896,7 @@ function initPhotos(){
 setTheme(load('theme') || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 setLang(load('lang') || 'zh');
 initPhotos();
+initTravelMap();
 </script>
 
 </body>
