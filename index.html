@@ -387,34 +387,6 @@ form label { display: block; font-size: 13px; color: var(--muted); margin-top: 1
 form input, form textarea { width: 100%; padding: 10px; border: 1px solid var(--card-border); border-radius: 8px; background: var(--bg); color: var(--ink); margin-top: 4px; }
 form button { margin-top: 16px; padding: 12px 24px; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer; }
 
-/* Research Content Notice / 研究內容聲明 */
-.research-notice {
-  width: 100%;
-  max-width: 1000px;
-  margin: 20px auto 0;
-  padding: 16px 20px;
-  border-top: 1px solid var(--line);
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--muted);
-  text-align: left;
-  box-sizing: border-box;
-  overflow-wrap: anywhere;
-  word-break: normal;
-}
-
-.research-notice p {
-  margin: 6px 0;
-  max-width: 100%;
-}
-
-@media (max-width: 600px) {
-  .research-notice {
-    padding: 14px 16px;
-    font-size: 12px;
-  }
-}
-
 footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size: 14px; }
 
 @media (max-width: 900px) {
@@ -429,6 +401,64 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
   .features-grid { grid-template-columns: 1fr; }
   .nav-links { display: none; }
 }
+
+
+/* Research notice and Travel showcase */
+.research-notice {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto 0;
+  padding: 16px 20px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  text-align: left;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.research-notice p { margin: 6px 0; max-width: 100%; }
+.travel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.travel-card {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 20px;
+}
+.travel-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 520px;
+  object-fit: contain;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.travel-file-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--accent);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .travel-grid { grid-template-columns: 1fr; }
+  .research-notice { padding: 14px 16px; font-size: 12px; }
+}
+
 </style>
 </head>
 <body>
@@ -446,6 +476,7 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
       <a href="#edu"><span class="zh">學經歷</span><span class="en">Education</span></a>
       <a href="#focus"><span class="zh">研究主軸</span><span class="en">Research</span></a>
       <a href="#research"><span class="zh">專案</span><span class="en">Projects</span></a>
+      <a href="#travel"><span class="zh">旅遊地圖</span><span class="en">Travel</span></a>
       <a href="#contact"><span class="zh">聯絡我</span><span class="en">Contact</span></a>
     </nav>
     <div class="tools">
@@ -703,6 +734,31 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
     </div>
   </section>
 
+  <!-- Travel Map & Files -->
+  <section id="travel">
+    <div class="section-label">TRAVEL & MAP</div>
+    <h2><span class="zh">旅遊地圖與行程分享</span><span class="en">Travel Maps & Itineraries</span></h2>
+    <p class="lead"><span class="zh">整理旅遊地圖、行程文件與相關規劃資料。</span><span class="en">A collection of travel maps, itinerary documents, and planning materials.</span></p>
+    <div class="travel-grid">
+      <div class="travel-card">
+        <h3><span class="zh">旅遊地圖</span><span class="en">Travel Map</span></h3>
+        <a href="map1.png" target="_blank" rel="noopener">
+          <img class="travel-map" src="map1.png" alt="Travel map / 旅遊地圖" loading="lazy">
+        </a>
+        <a class="travel-file-link" href="map1.png" target="_blank" rel="noopener"><span class="zh">開啟完整地圖</span><span class="en">View full map</span> ↗</a>
+      </div>
+      <div class="travel-card">
+        <h3><span class="zh">旅遊行程文件</span><span class="en">Travel Itinerary Files</span></h3>
+        <p class="zh">以下提供行程 PDF 與 PowerPoint 檔案，點選即可開啟或下載。</p>
+        <p class="en">Open or download the itinerary PDF and PowerPoint files below.</p>
+        <p><b>PDF</b> · traveling1.pdf</p>
+        <a class="travel-file-link" href="traveling1.pdf" target="_blank" rel="noopener"><span class="zh">開啟 PDF 行程</span><span class="en">Open PDF itinerary</span> ↗</a>
+        <p style="margin-top:20px;"><b>PowerPoint</b> · traveling2.pptx</p>
+        <a class="travel-file-link" href="traveling2.pptx" target="_blank" rel="noopener"><span class="zh">開啟／下載簡報</span><span class="en">Open / download presentation</span> ↗</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Contact -->
   <section id="contact">
     <div class="section-label">CONTACT</div>
@@ -732,8 +788,7 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
 
 </main>
 
-<!-- Research Content Notice / 研究內容聲明 -->
-<div class="research-notice">
+<div class="research-notice" role="note" aria-label="Research content notice">
   <p class="zh">本網頁所呈現之研究內容、研究構想、架構、圖表及相關資料，均屬本人研究範圍之產出。未經本人事先書面同意，請勿擅自使用、複製、散布或作為其他用途。</p>
   <p class="en">The research content, concepts, frameworks, figures, and related materials presented on this website are outputs of my research. No use, reproduction, distribution, or other use is permitted without my prior written consent.</p>
 </div>
