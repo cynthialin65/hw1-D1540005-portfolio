@@ -6,39 +6,60 @@
 <title>林歆倫 Cynthia Lin｜工程 BOM × NPI 成本 × AI</title>
 <style>
 :root {
-  --nav-bg: #1c355e;
+  /* 深藍色系 Navy theme */
+  --nav-bg: #0a1a3a;
   --nav-text: #ffffff;
-  --hero-bg-start: #eef5fc;
-  --hero-bg-end: #dceaf8;
-  --hero-accent: #c3dcf6;
-  --ink: #1a2b48;
-  --muted: #5e6d82;
+  --hero-bg-start: #12306b;
+  --hero-bg-end: #0a1a3a;
+  --hero-accent: #1e40af;
+  --hero-ink: #ffffff;
+  --hero-muted: #c7d6f2;
+  --ink: #0b1f44;
+  --muted: #4b5d7e;
   --card-bg: #ffffff;
-  --card-border: #e2e8f0;
-  --pill-bg: #dceaf8;
-  --pill-text: #1d4ed8;
-  --accent: #2563eb;
-  --bg: #f8fafc;
-  --line: #e2e8f0;
-  --soft: #eff6ff;
+  --card-border: #d5deee;
+  --pill-bg: #dde6f6;
+  --pill-text: #1e3a8a;
+  --accent: #1e40af;
+  --bg: #f2f5fb;
+  --line: #d5deee;
+  --soft: #e6edf9;
+  --icon-1: #0f2a5e;
+  --icon-2: #1e3a8a;
+  --icon-3: #1d4ed8;
+  --icon-4: #3b6fd8;
+  --gold: #94742a;        /* 淺底上的金色文字 */
+  --gold-fill: #c9a75e;   /* 金色按鈕／線條 */
+  --gold-hero: #e2c98f;   /* 深藍底上的香檳金 */
+  --gold-soft: #f6efdf;
 }
 
 [data-theme=dark] {
-  --nav-bg: #0f172a;
-  --nav-text: #f8fafc;
-  --hero-bg-start: #1e293b;
-  --hero-bg-end: #0f172a;
-  --hero-accent: #334155;
-  --ink: #f1f5f9;
-  --muted: #94a3b8;
-  --card-bg: #1e293b;
-  --card-border: #334155;
-  --pill-bg: #334155;
-  --pill-text: #93c5fd;
-  --accent: #60a5fa;
-  --bg: #0f172a;
-  --line: #334155;
-  --soft: #1e293b;
+  --nav-bg: #050d1f;
+  --nav-text: #f1f5fb;
+  --hero-bg-start: #0f2654;
+  --hero-bg-end: #050d1f;
+  --hero-accent: #1a3a7a;
+  --hero-ink: #f1f5fb;
+  --hero-muted: #a9bde3;
+  --ink: #e6edf8;
+  --muted: #9cb0d2;
+  --card-bg: #0e1f42;
+  --card-border: #1d3566;
+  --pill-bg: #17305f;
+  --pill-text: #a9c4ff;
+  --accent: #7fa7f5;
+  --bg: #071430;
+  --line: #1d3566;
+  --soft: #11264f;
+  --icon-1: #1e3a8a;
+  --icon-2: #1d4ed8;
+  --icon-3: #2f62d9;
+  --icon-4: #4f7fe6;
+  --gold: #dcc28a;
+  --gold-fill: #d4b673;
+  --gold-hero: #e2c98f;
+  --gold-soft: #2a2a2e;
 }
 
 * { box-sizing: border-box; }
@@ -146,12 +167,12 @@ body.lang-en .en { display: revert; }
   font-size: clamp(38px, 4.5vw, 56px);
   font-weight: 800;
   margin: 0 0 16px;
-  color: var(--ink);
+  color: var(--hero-ink);
   letter-spacing: -0.5px;
 }
 .hero-subtitle {
   font-size: 20px;
-  color: var(--muted);
+  color: var(--hero-muted);
   margin-bottom: 24px;
   max-width: 620px;
   line-height: 1.5;
@@ -161,7 +182,7 @@ body.lang-en .en { display: revert; }
   flex-wrap: wrap;
   gap: 20px;
   margin-bottom: 28px;
-  color: var(--muted);
+  color: var(--hero-muted);
   font-size: 15px;
 }
 .contact-item {
@@ -176,22 +197,18 @@ body.lang-en .en { display: revert; }
   flex-wrap: wrap;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   border-radius: 30px;
-  border: 1px solid rgba(255,255,255,0.8);
+  border: 1px solid rgba(255,255,255,0.25);
   display: inline-flex;
   align-items: center;
 }
-[data-theme=dark] .pill-container {
-  background: rgba(30, 41, 59, 0.6);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-.pill-icon { width: 18px; height: 18px; color: var(--accent); }
+.pill-icon { width: 18px; height: 18px; color: #93b8ff; }
 .pill-text {
   font-size: 14px;
   font-weight: 600;
-  color: var(--ink);
+  color: var(--hero-ink);
 }
 
 .hero-photo-container {
@@ -228,7 +245,7 @@ body.lang-en .en { display: revert; }
   font-size: 64px;
   font-weight: 800;
   color: #fff;
-  background: linear-gradient(135deg, #2563eb, #1c355e);
+  background: linear-gradient(135deg, #1e40af, #0a1a3a);
 }
 
 /* Feature Grid */
@@ -267,10 +284,10 @@ body.lang-en .en { display: revert; }
   justify-content: center;
   margin-bottom: 16px;
 }
-.feature-icon.blue { background: #3b82f6; color: #fff; }
-.feature-icon.teal { background: #10b981; color: #fff; }
-.feature-icon.purple { background: #8b5cf6; color: #fff; }
-.feature-icon.orange { background: #f97316; color: #fff; }
+.feature-icon.blue { background: var(--icon-1); color: #fff; }
+.feature-icon.teal { background: var(--icon-2); color: #fff; }
+.feature-icon.purple { background: var(--icon-3); color: #fff; }
+.feature-icon.orange { background: var(--icon-4); color: #fff; }
 .feature-icon svg { width: 24px; height: 24px; fill: currentColor; }
 
 .feature-title {
@@ -461,6 +478,30 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
   .research-notice { padding: 14px 16px; font-size: 12px; }
 }
 
+/* ===== 香檳金點綴 Champagne gold accents ===== */
+.navbar { border-bottom: 1px solid rgba(226,201,143,0.35); }
+.nav-links a:hover { color: var(--gold-hero); }
+.brand-title { border-left-color: rgba(226,201,143,0.5); }
+.hero-content h1 > span > span { color: var(--gold-hero); }
+.hero-subtitle { border-left: 3px solid var(--gold-hero); padding-left: 14px; }
+@media (max-width: 900px) { .hero-subtitle { border-left: 0; padding-left: 0; } }
+.pill-icon { color: var(--gold-hero); }
+.pill-container { border-color: rgba(226,201,143,0.45); }
+.section-label { color: var(--gold); }
+.section-label::after { content: ""; display: block; width: 32px; height: 2px; margin-top: 6px; background: var(--gold-fill); }
+.feature-card:hover { border-color: var(--gold-fill); }
+.feature-link { color: var(--gold); }
+.pillar-no { color: var(--gold-fill); opacity: 0.9; }
+.pillar-card { border-top: 3px solid var(--gold-fill); }
+.timeline { border-left-color: var(--gold-fill); }
+.timeline-item::before { background: var(--gold-fill); }
+.quote-box { border-left-color: var(--gold-fill); }
+.tabs button.on { background: var(--nav-bg); border-color: var(--gold-fill); color: var(--gold-hero); }
+form button { background: var(--gold-fill); color: #0a1a3a; }
+form button:hover { filter: brightness(1.06); }
+.pub-no { color: var(--gold-fill); }
+footer { border-top: 1px solid var(--line); }
+
 </style>
 </head>
 <body>
@@ -479,6 +520,7 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
       <a href="#focus"><span class="zh">研究主軸</span><span class="en">Research</span></a>
       <a href="#research"><span class="zh">專案</span><span class="en">Projects</span></a>
       <a href="#travel"><span class="zh">旅遊地圖</span><span class="en">Travel</span></a>
+      <a href="#english"><span class="zh">每日英文</span><span class="en">Daily English</span></a>
       <a href="#contact"><span class="zh">聯絡我</span><span class="en">Contact</span></a>
     </nav>
     <div class="tools">
@@ -769,6 +811,15 @@ footer { text-align: center; padding: 40px 24px; color: var(--muted); font-size:
     </div>
   </section>
 
+  <!-- Daily English App -->
+  <section id="english">
+    <div class="section-label">DAILY ENGLISH</div>
+    <h2><span class="zh">每日一句英文</span><span class="en">Daily English for Teens</span></h2>
+    <p class="lead"><span class="zh">給青少年的每日英文：依全民英檢初級、中級、中高級分級，每天一句、一個關鍵字、一題小測驗。</span><span class="en">One English sentence a day for teens, leveled by GEPT (A2 / B1 / B2), with a key word and a mini quiz.</span></p>
+    <iframe id="deFrame" title="每日一句英文 Daily English" loading="lazy"
+            style="display:block;width:100%;min-height:320px;border:0;background:transparent;"></iframe>
+  </section>
+
   <!-- Contact -->
   <section id="contact">
     <div class="section-label">CONTACT</div>
@@ -828,6 +879,23 @@ function setTheme(t){
   document.documentElement.dataset.theme = t;
   $('themeBtn').textContent = t==='dark'?'☀️':'🌙';
   save('theme', t);
+  syncEnglishTheme();
+}
+
+/* 每日英文 app：深色模式同步＋iframe 自動高度 */
+function syncEnglishTheme(){
+  const f = $('deFrame');
+  if(f && f.contentWindow) f.contentWindow.postMessage({type:'theme', value:document.documentElement.dataset.theme}, '*');
+}
+function initEnglishApp(){
+  const f = $('deFrame'); if(!f) return;
+  f.src = 'daily-english.html?embed=1&theme=' + (document.documentElement.dataset.theme || 'light');
+  f.addEventListener('load', syncEnglishTheme);
+  window.addEventListener('message', e => {
+    if(e.source === f.contentWindow && e.data && e.data.type === 'daily-english-height'){
+      f.style.height = e.data.height + 'px';
+    }
+  });
 }
 function toggleTheme(){ setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'); }
 
@@ -899,6 +967,7 @@ setTheme(load('theme') || (window.matchMedia && matchMedia('(prefers-color-schem
 setLang(load('lang') || 'zh');
 initPhotos();
 initTravelMap();
+initEnglishApp();
 </script>
 
 </body>

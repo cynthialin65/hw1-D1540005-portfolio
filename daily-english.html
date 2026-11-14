@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日一句英文 Daily English</title>
+<style>
+  :root{
+    --bg:#f2f5fb; --card:#ffffff; --text:#0b1f44; --muted:#4b5d7e;
+    --line:#d5deee; --accent:#1e40af; --accent-soft:#dde6f6; --ok:#1d4ed8;
+    --lv1:#3b6fd8; --lv2:#1e40af; --lv3:#0f2a5e;
+    --gold:#94742a; --gold-fill:#c9a75e; --gold-soft:#f6efdf;
+  }
+  html[data-theme="dark"]{
+    --bg:#071430; --card:#0e1f42; --text:#e6edf8; --muted:#9cb0d2;
+    --line:#1d3566; --accent:#7fa7f5; --accent-soft:#17305f; --ok:#3b6fd8;
+    --lv1:#4f7fe6; --lv2:#2f62d9; --lv3:#1e3a8a;
+    --gold:#dcc28a; --gold-fill:#d4b673; --gold-soft:#2c2a24;
+  }
+  html.embed .title-block{display:none}
+  html.embed header{justify-content:flex-start}
+  html.embed .wrap{max-width:none;padding:4px 0 8px}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6}
+  .wrap{max-width:720px;margin:0 auto;padding:20px 16px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  h2{margin:0;font-size:1.35rem}
+  .sub{color:var(--muted);font-size:.85rem}
+  .levels{display:flex;gap:6px;flex-wrap:wrap}
+  .levels button{border:1px solid var(--line);background:var(--card);color:var(--text);
+    padding:6px 12px;border-radius:999px;cursor:pointer;font-size:.85rem}
+  .levels button[aria-pressed="true"]{background:var(--lvc);border-color:var(--lvc);color:#fff}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .meta{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:var(--muted);margin-bottom:10px}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;color:#fff;background:var(--lvc);font-size:.75rem}
+  .en{font-size:1.45rem;font-weight:600;margin:6px 0 8px;font-family:Georgia,"Times New Roman",serif}
+  .en mark{background:var(--accent-soft);color:var(--accent);padding:0 3px;border-radius:4px}
+  .zh{color:var(--muted);transition:filter .2s}
+  .zh.hidden{filter:blur(6px);user-select:none;cursor:pointer}
+  .word{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:.92rem}
+  .word b{color:var(--accent)}
+  .tip{margin-top:6px;font-size:.88rem;color:var(--muted)}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .btn{border:1px solid var(--line);background:var(--bg);color:var(--text);padding:8px 14px;
+    border-radius:10px;cursor:pointer;font-size:.88rem}
+  .btn:hover{border-color:var(--accent)}
+  .btn.primary{background:var(--lv2);border-color:var(--lv2);color:#fff}
+  .btn.done{background:var(--ok);border-color:var(--ok);color:#fff}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:.85rem;color:var(--muted)}
+  .nav button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:.85rem;padding:4px}
+  .nav button:disabled{color:var(--muted);opacity:.5;cursor:default}
+  .quiz{margin-top:16px;display:none}
+  .quiz.show{display:block}
+  .quiz p{margin:0 0 8px;font-size:.92rem}
+  .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opts button{border:1px solid var(--line);background:var(--bg);color:var(--text);padding:6px 12px;border-radius:8px;cursor:pointer}
+  .opts button.right{background:var(--ok);color:#fff;border-color:var(--ok)}
+  .opts button.wrong{text-decoration:line-through;opacity:.6}
+  footer{margin-top:12px;font-size:.75rem;color:var(--muted);text-align:center}
+  /* 香檳金點綴 */
+  .card{border-top:3px solid var(--gold-fill)}
+  .btn.primary{background:var(--gold-fill);border-color:var(--gold-fill);color:#0a1a3a;font-weight:600}
+  .btn.done{background:var(--gold-fill);border-color:var(--gold-fill);color:#0a1a3a}
+  .levels button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--gold-fill)}
+  .word b{color:var(--gold)}
+  .tip{border-left:3px solid var(--gold-fill);padding-left:10px}
+  #streak{color:var(--gold);font-weight:600}
+  .opts button.right{background:var(--gold-fill);border-color:var(--gold-fill);color:#0a1a3a}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title-block">
+      <h2>每日一句英文 <span style="font-weight:400">Daily English</span></h2>
+      <div class="sub">依全民英檢 GEPT 分級・每天一句、一個關鍵字、一題小測驗</div>
+    </div>
+    <div class="levels" role="group" aria-label="選擇程度">
+      <button data-lv="1">初級 A2</button>
+      <button data-lv="2">中級 B1</button>
+      <button data-lv="3">中高級 B2</button>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="meta">
+      <span id="date"></span>
+      <span class="tag" id="lvTag"></span>
+    </div>
+    <div class="en" id="en"></div>
+    <div class="zh hidden" id="zh" title="點一下顯示中文"></div>
+    <div class="word" id="word"></div>
+    <div class="tip" id="tip"></div>
+
+    <div class="actions">
+      <button class="btn primary" id="speak">🔊 聽發音</button>
+      <button class="btn" id="slow">🐢 慢速</button>
+      <button class="btn" id="toggleZh">顯示中文</button>
+      <button class="btn" id="quizBtn">✏️ 小測驗</button>
+      <button class="btn" id="doneBtn">✓ 今天學會了</button>
+    </div>
+
+    <div class="quiz" id="quiz">
+      <p id="qText"></p>
+      <div class="opts" id="opts"></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button id="prev">← 前一天</button>
+    <span id="streak"></span>
+    <button id="next">後一天 →</button>
+  </div>
+  <footer>例句為原創教學用句。發音使用瀏覽器內建語音。</footer>
+</div>
+
+<script>
+/* ===== 句庫：每級 30 句，依日期輪替 =====
+   w: [關鍵字, 詞性, 中文]  t: 用法小提醒 */
+const DATA = {
+1: [ // 初級 A2（約國中程度）
+ {e:"I usually get up at seven on school days.",z:"上學日我通常七點起床。",w:["usually","adv.","通常"],t:"頻率副詞放在一般動詞前面：I usually walk."},
+ {e:"Can you help me with my homework?",z:"你可以幫我做功課嗎？",w:["help","v.","幫助"],t:"help someone with something＝幫某人做某事。"},
+ {e:"My favorite subject is science.",z:"我最喜歡的科目是自然。",w:["favorite","adj.","最喜歡的"],t:"英式拼法是 favourite。"},
+ {e:"It's raining, so don't forget your umbrella.",z:"在下雨，別忘了帶傘。",w:["forget","v.","忘記"],t:"don't forget + 名詞／to + 動詞。"},
+ {e:"We are going to the night market this weekend.",z:"我們這週末要去夜市。",w:["weekend","n.","週末"],t:"be going to 表示已經計畫好的事。"},
+ {e:"How much is this bubble tea?",z:"這杯珍奶多少錢？",w:["how much","phr.","多少（錢／量）"],t:"How many 接可數名詞，How much 接不可數或問價錢。"},
+ {e:"I'm sorry I'm late.",z:"抱歉我遲到了。",w:["late","adj.","遲的"],t:"I'm sorry for being late. 也可以。"},
+ {e:"She plays basketball after school.",z:"她放學後打籃球。",w:["after","prep.","在…之後"],t:"球類運動前不加 the：play basketball。"},
+ {e:"Please turn off the lights when you leave.",z:"離開時請關燈。",w:["turn off","phr.","關掉"],t:"相反是 turn on。"},
+ {e:"I'm hungry. Let's eat something.",z:"我餓了，我們吃點東西吧。",w:["hungry","adj.","餓的"],t:"Let's = Let us，後面接原形動詞。"},
+ {e:"My brother is taller than me.",z:"我哥哥比我高。",w:["taller","adj.","比較高的"],t:"比較級：短形容詞 + er + than。"},
+ {e:"What time does the bus come?",z:"公車幾點來？",w:["time","n.","時間"],t:"疑問句用 does 時，動詞回到原形 come。"},
+ {e:"I have a cold, so I'm staying home today.",z:"我感冒了，所以今天待在家。",w:["cold","n.","感冒"],t:"have a cold＝感冒；cold 當形容詞是「冷的」。"},
+ {e:"Don't worry. Everything will be fine.",z:"別擔心，一切都會沒事的。",w:["worry","v.","擔心"],t:"worry about something＝擔心某事。"},
+ {e:"I like reading comics before bed.",z:"我喜歡睡前看漫畫。",w:["before","prep.","在…之前"],t:"like + V-ing 表示喜歡做某事。"},
+ {e:"Could you say that again, please?",z:"可以請你再說一次嗎？",w:["again","adv.","再一次"],t:"Could you…? 比 Can you…? 更有禮貌。"},
+ {e:"Our classroom is on the third floor.",z:"我們的教室在三樓。",w:["floor","n.","樓層"],t:"在幾樓用 on：on the third floor。"},
+ {e:"I walk my dog every evening.",z:"我每天傍晚遛狗。",w:["walk","v.","遛（狗）；走路"],t:"walk the dog＝遛狗。"},
+ {e:"This is my best friend, Amy.",z:"這是我最好的朋友 Amy。",w:["best","adj.","最好的"],t:"good → better → best。"},
+ {e:"Wash your hands before you eat.",z:"吃飯前要洗手。",w:["wash","v.","洗"],t:"祈使句用原形動詞開頭。"},
+ {e:"I want to be a doctor in the future.",z:"我將來想當醫生。",w:["future","n.","未來"],t:"in the future＝在未來。"},
+ {e:"The library is quiet, so please talk softly.",z:"圖書館很安靜，請小聲說話。",w:["quiet","adj.","安靜的"],t:"注意別和 quite（相當）搞混。"},
+ {e:"I didn't sleep well last night.",z:"我昨晚沒睡好。",w:["last night","phr.","昨晚"],t:"過去式否定：didn't + 原形動詞。"},
+ {e:"Happy birthday! I hope you have a great day.",z:"生日快樂！祝你有美好的一天。",w:["hope","v.","希望"],t:"hope + 子句，表示希望某事成真。"},
+ {e:"Is there a convenience store near here?",z:"這附近有便利商店嗎？",w:["near","prep.","在…附近"],t:"Is there…? 用來問某地有沒有某物。"},
+ {e:"I am good at drawing.",z:"我很擅長畫畫。",w:["good at","phr.","擅長"],t:"be good at + 名詞／V-ing。"},
+ {e:"Let's meet at the station at three.",z:"我們三點在車站碰面吧。",w:["meet","v.","碰面"],t:"時間點用 at：at three。"},
+ {e:"My mom cooks dinner for us every day.",z:"我媽媽每天幫我們煮晚餐。",w:["cook","v.","煮"],t:"第三人稱單數現在式動詞加 s：cooks。"},
+ {e:"Thank you for your help.",z:"謝謝你的幫忙。",w:["thank","v.","感謝"],t:"Thank you for + 名詞／V-ing。"},
+ {e:"See you tomorrow!",z:"明天見！",w:["tomorrow","n./adv.","明天"],t:"See you later／soon 也常用。"}
+],
+2: [ // 中級 B1（約高中程度）
+ {e:"I'm trying to get used to waking up early.",z:"我正在試著習慣早起。",w:["get used to","phr.","逐漸習慣"],t:"get used to + V-ing，別和 used to + 原形（過去常常）搞混。"},
+ {e:"If I finish my homework early, I'll play games.",z:"如果我早點寫完功課，我就要打電動。",w:["finish","v.","完成"],t:"條件句 if 子句用現在式表示未來。"},
+ {e:"She has been learning Japanese for two years.",z:"她已經學日文兩年了。",w:["for","prep.","持續（一段時間）"],t:"現在完成進行式強調一直持續到現在。"},
+ {e:"I'm not sure, but I'll do my best.",z:"我不確定，但我會盡力。",w:["do one's best","phr.","盡力"],t:"I'll try my best. 意思相同。"},
+ {e:"It took me an hour to finish this report.",z:"我花了一小時完成這份報告。",w:["take","v.","花費（時間）"],t:"It takes + 人 + 時間 + to V。"},
+ {e:"Mistakes are part of learning.",z:"犯錯是學習的一部分。",w:["mistake","n.","錯誤"],t:"make a mistake＝犯錯（不說 do a mistake）。"},
+ {e:"I'd rather stay home than go out tonight.",z:"今晚我寧願待在家也不想出去。",w:["would rather","phr.","寧願"],t:"would rather A than B，A、B 都用原形動詞。"},
+ {e:"Could you tell me where the nearest MRT station is?",z:"可以告訴我最近的捷運站在哪裡嗎？",w:["nearest","adj.","最近的"],t:"間接問句用直述句語序：where it is。"},
+ {e:"My phone ran out of battery during the trip.",z:"旅行途中我的手機沒電了。",w:["run out of","phr.","用完"],t:"We ran out of milk. 牛奶用完了。"},
+ {e:"I'm looking forward to the summer vacation.",z:"我很期待暑假。",w:["look forward to","phr.","期待"],t:"to 是介系詞，後面接名詞或 V-ing。"},
+ {e:"Instead of complaining, let's find a solution.",z:"與其抱怨，不如找出解決辦法。",w:["instead of","phr.","代替；而不是"],t:"instead of + 名詞／V-ing。"},
+ {e:"He was so tired that he fell asleep in class.",z:"他累到在課堂上睡著了。",w:["so…that","phr.","如此…以致於"],t:"so + 形容詞 + that + 結果。"},
+ {e:"You should take a break if you feel stressed.",z:"如果覺得壓力大，你應該休息一下。",w:["stressed","adj.","有壓力的"],t:"take a break＝休息一下。"},
+ {e:"I've never been to Japan, but I'd love to go.",z:"我從沒去過日本，但很想去。",w:["never","adv.","從未"],t:"have been to＝去過（已回來）。"},
+ {e:"Practice makes perfect.",z:"熟能生巧。",w:["practice","n./v.","練習"],t:"英式動詞拼成 practise。"},
+ {e:"Our team won the game in the last minute.",z:"我們隊在最後一分鐘贏了比賽。",w:["win","v.","贏（won 過去式）"],t:"win a game／prize；beat 一個對手。"},
+ {e:"I didn't expect the test to be so easy.",z:"我沒想到考試這麼簡單。",w:["expect","v.","預期"],t:"expect + 受詞 + to V。"},
+ {e:"Remember to back up your files regularly.",z:"記得定期備份你的檔案。",w:["regularly","adv.","定期地"],t:"remember to V＝記得要去做；remember V-ing＝記得做過。"},
+ {e:"It's not a big deal. Don't take it too seriously.",z:"這沒什麼大不了的，別太認真。",w:["seriously","adv.","認真地；嚴重地"],t:"It's no big deal. 也很常用。"},
+ {e:"The more you read, the more you learn.",z:"讀得越多，學得越多。",w:["the more","phr.","越…越…"],t:"the + 比較級…, the + 比較級…"},
+ {e:"I agree with you on this point.",z:"在這一點上我同意你。",w:["agree","v.","同意"],t:"agree with + 人；agree to + 提議。"},
+ {e:"Can I borrow your charger for a minute?",z:"我可以借一下你的充電器嗎？",w:["borrow","v.","借入"],t:"borrow 是向別人借；lend 是借給別人。"},
+ {e:"She apologized for being rude yesterday.",z:"她為昨天的無禮道歉。",w:["apologize","v.","道歉"],t:"apologize to 人 for 事。"},
+ {e:"I'm in charge of decorating the classroom.",z:"我負責佈置教室。",w:["in charge of","phr.","負責"],t:"Who's in charge here? 這裡誰負責？"},
+ {e:"Let me know if you need anything.",z:"如果需要什麼請告訴我。",w:["let…know","phr.","讓…知道"],t:"常見於訊息和電子郵件結尾。"},
+ {e:"He's been saving money to buy a new bike.",z:"他一直在存錢買新腳踏車。",w:["save","v.","存（錢）；拯救"],t:"save up for something＝為某物存錢。"},
+ {e:"Although it was cold, we went swimming.",z:"雖然很冷，我們還是去游泳了。",w:["although","conj.","雖然"],t:"although 和 but 不能同時用在一句。"},
+ {e:"I can't afford a new phone right now.",z:"我現在買不起新手機。",w:["afford","v.","負擔得起"],t:"常與 can／can't 連用。"},
+ {e:"Try to look at the problem from a different angle.",z:"試著從不同角度看這個問題。",w:["angle","n.","角度"],t:"from another point of view 意思相近。"},
+ {e:"Good luck on your exam tomorrow!",z:"祝你明天考試順利！",w:["luck","n.","運氣"],t:"Good luck with／on + 事情。"}
+],
+3: [ // 中高級 B2
+ {e:"Consistency matters more than intensity.",z:"持之以恆比一時的拚勁更重要。",w:["consistency","n.","一致性；持續性"],t:"形容詞 consistent：be consistent with…"},
+ {e:"She managed to stay calm despite the pressure.",z:"儘管壓力很大，她仍設法保持冷靜。",w:["despite","prep.","儘管"],t:"despite + 名詞（不加 of）；= in spite of。"},
+ {e:"Social media can easily distort our sense of reality.",z:"社群媒體很容易扭曲我們對現實的感知。",w:["distort","v.","扭曲"],t:"名詞 distortion。"},
+ {e:"It's worth taking the time to double-check your answers.",z:"花時間再檢查一次答案是值得的。",w:["worth","adj.","值得的"],t:"be worth + V-ing／名詞。"},
+ {e:"The more options we have, the harder it is to decide.",z:"選擇越多，越難做決定。",w:["option","n.","選項"],t:"have no option but to V＝別無選擇只能…"},
+ {e:"He tends to underestimate how long tasks will take.",z:"他往往低估事情要花多久時間。",w:["underestimate","v.","低估"],t:"反義字 overestimate。"},
+ {e:"Had I known about the test, I would have studied harder.",z:"要是我早知道有考試，我會更用功。",w:["had I known","phr.","要是我早知道"],t:"與過去事實相反的倒裝假設：Had + 主詞 + p.p."},
+ {e:"Critical thinking is essential in the age of AI.",z:"在 AI 時代，批判性思考不可或缺。",w:["essential","adj.","必要的"],t:"It is essential that + 主詞 + (should) + 原形。"},
+ {e:"Volunteering gave me a whole new perspective on life.",z:"當志工讓我對人生有了全新的看法。",w:["perspective","n.","觀點；看法"],t:"put things into perspective＝客觀看待事情。"},
+ {e:"We need to strike a balance between work and rest.",z:"我們需要在工作與休息之間取得平衡。",w:["strike a balance","phr.","取得平衡"],t:"strike 在此是「達成」的意思。"},
+ {e:"Not only did he apologize, but he also offered to help.",z:"他不只道歉，還主動提議幫忙。",w:["not only…but also","phr.","不僅…而且"],t:"Not only 放句首要倒裝。"},
+ {e:"The results were far better than we had anticipated.",z:"結果遠比我們預期的好。",w:["anticipate","v.","預期"],t:"far／much 可加強比較級。"},
+ {e:"Failure is simply an opportunity to begin again, more wisely.",z:"失敗只是一個更有智慧地重新開始的機會。",w:["opportunity","n.","機會"],t:"seize／take an opportunity＝把握機會。"},
+ {e:"Plastic pollution poses a serious threat to marine life.",z:"塑膠污染對海洋生物構成嚴重威脅。",w:["pose","v.","造成；構成"],t:"pose a threat／risk／problem 是常見搭配。"},
+ {e:"I'd appreciate it if you could reply by Friday.",z:"如果你能在週五前回覆，我會很感激。",w:["appreciate","v.","感激"],t:"注意要加 it：I'd appreciate it if…"},
+ {e:"His argument sounds convincing, but it lacks evidence.",z:"他的論點聽起來有說服力，但缺乏證據。",w:["evidence","n.","證據"],t:"evidence 不可數：a piece of evidence。"},
+ {e:"Learning a language requires patience and persistence.",z:"學習語言需要耐心和毅力。",w:["persistence","n.","毅力"],t:"形容詞 persistent。"},
+ {e:"She was reluctant to share her opinion at first.",z:"她起初不太願意分享自己的意見。",w:["reluctant","adj.","不情願的"],t:"be reluctant to V。"},
+ {e:"Technology has fundamentally changed the way we communicate.",z:"科技從根本上改變了我們溝通的方式。",w:["fundamentally","adv.","根本地"],t:"the way + 子句，不加 how。"},
+ {e:"It goes without saying that safety comes first.",z:"安全第一，這是不用說的。",w:["go without saying","phr.","不言而喻"],t:"正式寫作中可用 It is self-evident that…"},
+ {e:"We should judge people by their actions, not their appearance.",z:"我們應該以行為而非外表來評斷人。",w:["appearance","n.","外表；出現"],t:"動詞 appear。"},
+ {e:"Being honest with yourself is the first step toward growth.",z:"對自己誠實是成長的第一步。",w:["toward","prep.","朝向"],t:"英式常寫 towards。"},
+ {e:"The new policy has sparked heated debate among students.",z:"新政策在學生之間引發了激烈辯論。",w:["spark","v.","引發"],t:"heated debate＝激烈的辯論。"},
+ {e:"I'm committed to improving my English every day.",z:"我致力於每天提升英文。",w:["committed","adj.","投入的；致力的"],t:"be committed to + V-ing（to 是介系詞）。"},
+ {e:"There's no point in worrying about things you can't control.",z:"擔心你無法控制的事是沒有意義的。",w:["no point in","phr.","…沒有意義"],t:"There's no point in + V-ing。"},
+ {e:"Curiosity is the engine of learning.",z:"好奇心是學習的引擎。",w:["curiosity","n.","好奇心"],t:"形容詞 curious：be curious about…"},
+ {e:"The project was postponed due to unforeseen circumstances.",z:"由於不可預見的情況，計畫延期了。",w:["postpone","v.","延期"],t:"= put off；due to + 名詞。"},
+ {e:"Effective communication involves listening as much as speaking.",z:"有效的溝通，傾聽和說話一樣重要。",w:["involve","v.","涉及；包含"],t:"involve + V-ing。"},
+ {e:"You'll never know your limits unless you push yourself.",z:"除非你逼自己一把，否則永遠不知道自己的極限。",w:["unless","conj.","除非"],t:"unless = if…not。"},
+ {e:"Small habits, repeated daily, lead to remarkable results.",z:"每天重複的小習慣，會帶來驚人的成果。",w:["remarkable","adj.","非凡的"],t:"lead to＝導致、帶來。"}
+]};
+
+const LV_NAME = {1:"GEPT 初級・CEFR A2",2:"GEPT 中級・CEFR B1",3:"GEPT 中高級・CEFR B2"};
+const LV_COLOR = {1:"var(--lv1)",2:"var(--lv2)",3:"var(--lv3)"};
+const $ = id => document.getElementById(id);
+
+/* 安全的 localStorage（嵌入 iframe 時某些瀏覽器會擋） */
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+
+/* 網址參數：?level=2&theme=dark */
+const params = new URLSearchParams(location.search);
+if(params.get("embed")) document.documentElement.classList.add("embed");
+let level = Number(params.get("level")) || store.get("de_level",1);
+if(![1,2,3].includes(level)) level = 1;
+let offset = 0; // 0 = 今天，-1 = 昨天…
+
+function setTheme(t){
+  if(t!=="dark" && t!=="light"){
+    t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  document.documentElement.dataset.theme = t;
+}
+setTheme(params.get("theme"));
+/* 父頁面可用 postMessage 同步深色模式 */
+window.addEventListener("message", e=>{
+  if(e.data && e.data.type==="theme") setTheme(e.data.value);
+});
+
+function dayIndex(d){ // 從 2026-01-01 起算的天數
+  const base = Date.UTC(2026,0,1);
+  const t = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+  return Math.floor((t-base)/86400000);
+}
+function todayDate(){ const d=new Date(); d.setDate(d.getDate()+offset); return d; }
+function current(){
+  const list = DATA[level];
+  const i = ((dayIndex(todayDate()) % list.length) + list.length) % list.length;
+  return list[i];
+}
+function key(){ const d=todayDate(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function render(){
+  const s = current(), d = todayDate();
+  document.documentElement.style.setProperty("--lvc", LV_COLOR[level]);
+  document.querySelectorAll(".levels button").forEach(b=>b.setAttribute("aria-pressed", Number(b.dataset.lv)===level));
+  const wk = ["日","一","二","三","四","五","六"][d.getDay()];
+  $("date").textContent = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}（${wk}）${offset===0?"・今天":""}`;
+  $("lvTag").textContent = LV_NAME[level];
+
+  // 句子中標示關鍵字（找得到才標）
+  const w = s.w[0];
+  const re = new RegExp("\\b("+w.split(/\s+/)[0].replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\w*)","i");
+  $("en").innerHTML = esc(s.e).replace(re,"<mark>$1</mark>");
+  $("zh").textContent = s.z;
+  $("zh").classList.add("hidden");
+  $("toggleZh").textContent = "顯示中文";
+  $("word").innerHTML = `📌 關鍵字：<b>${esc(w)}</b> <i>${esc(s.w[1])}</i> ${esc(s.w[2])}`;
+  $("tip").textContent = "💡 " + s.t;
+  $("quiz").classList.remove("show");
+  $("next").disabled = offset >= 0;
+
+  const done = store.get("de_done",{});
+  const isDone = !!(done[level] && done[level][key()]);
+  $("doneBtn").className = "btn" + (isDone ? " done" : "");
+  $("doneBtn").textContent = isDone ? "✓ 已學會" : "✓ 今天學會了";
+  $("streak").textContent = `🔥 連續 ${streak()} 天`;
+  postHeight();
+}
+
+function streak(){
+  const done = (store.get("de_done",{})[level]) || {};
+  let n=0; const d=new Date();
+  const k = x=>`${x.getFullYear()}-${x.getMonth()+1}-${x.getDate()}`;
+  if(!done[k(d)]) d.setDate(d.getDate()-1); // 今天還沒按也不算斷
+  while(done[k(d)]){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+
+function speak(rate){
+  if(!("speechSynthesis" in window)){ alertBox("此瀏覽器不支援語音"); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(current().e);
+  u.lang = "en-US"; u.rate = rate;
+  const v = speechSynthesis.getVoices().find(v=>/en[-_]US/i.test(v.lang));
+  if(v) u.voice = v;
+  speechSynthesis.speak(u);
+}
+function alertBox(msg){ $("tip").textContent = "⚠️ " + msg; }
+
+function quiz(){
+  const s = current(), list = DATA[level];
+  const pool = list.filter(x=>x!==s).map(x=>x.w[2]);
+  const wrong = [];
+  while(wrong.length<2 && pool.length){ wrong.push(pool.splice(Math.floor(Math.random()*pool.length),1)[0]); }
+  const opts = [s.w[2], ...wrong].sort(()=>Math.random()-.5);
+  $("qText").innerHTML = `「<b>${esc(s.w[0])}</b>」是什麼意思？`;
+  $("opts").innerHTML = "";
+  opts.forEach(o=>{
+    const b=document.createElement("button"); b.textContent=o;
+    b.onclick=()=>{ b.classList.add(o===s.w[2]?"right":"wrong"); if(o===s.w[2]) b.textContent="✓ "+o; };
+    $("opts").appendChild(b);
+  });
+  $("quiz").classList.add("show");
+  postHeight();
+}
+
+/* 讓父頁面 iframe 自動調整高度 */
+function postHeight(){
+  try{ parent.postMessage({type:"daily-english-height", height:document.documentElement.scrollHeight},"*"); }catch(e){}
+}
+
+document.querySelectorAll(".levels button").forEach(b=>b.onclick=()=>{
+  level = Number(b.dataset.lv); store.set("de_level",level); render();
+});
+$("speak").onclick=()=>speak(0.95);
+$("slow").onclick=()=>speak(0.6);
+$("toggleZh").onclick=$("zh").onclick=()=>{
+  const h=$("zh").classList.toggle("hidden");
+  $("toggleZh").textContent = h ? "顯示中文" : "隱藏中文";
+};
+$("quizBtn").onclick=quiz;
+$("doneBtn").onclick=()=>{
+  const done=store.get("de_done",{}); done[level]=done[level]||{};
+  if(done[level][key()]) delete done[level][key()]; else done[level][key()]=1;
+  store.set("de_done",done); render();
+};
+$("prev").onclick=()=>{ if(offset>-29){offset--; render();} };
+$("next").onclick=()=>{ if(offset<0){offset++; render();} };
+window.addEventListener("resize", postHeight);
+if("speechSynthesis" in window) speechSynthesis.onvoiceschanged=()=>{};
+
+render();
+</script>
+</body>
+</html>
